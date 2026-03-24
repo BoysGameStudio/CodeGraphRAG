@@ -94,6 +94,20 @@ EXT_CS = ".cs"
 EXT_PHP = ".php"
 EXT_LUA = ".lua"
 
+# (H) Shader file extensions
+EXT_GLSL = ".glsl"
+EXT_VERT = ".vert"
+EXT_FRAG = ".frag"
+EXT_GEOM = ".geom"
+EXT_COMP = ".comp"
+EXT_TESC = ".tesc"
+EXT_TESE = ".tese"
+EXT_HLSL = ".hlsl"
+EXT_HLSLI = ".hlsli"
+EXT_FX = ".fx"
+EXT_FXH = ".fxh"
+EXT_SHADER = ".shader"
+
 # (H) File extension tuples by language
 PY_EXTENSIONS = (EXT_PY,)
 JS_EXTENSIONS = (EXT_JS, EXT_JSX)
@@ -118,6 +132,8 @@ CPP_EXTENSIONS = (
 CS_EXTENSIONS = (EXT_CS,)
 PHP_EXTENSIONS = (EXT_PHP,)
 LUA_EXTENSIONS = (EXT_LUA,)
+GLSL_EXTENSIONS = (EXT_GLSL, EXT_VERT, EXT_FRAG, EXT_GEOM, EXT_COMP, EXT_TESC, EXT_TESE)
+HLSL_EXTENSIONS = (EXT_HLSL, EXT_HLSLI, EXT_FX, EXT_FXH, EXT_SHADER)
 
 # (H) Package indicator files
 PKG_INIT_PY = "__init__.py"
@@ -470,6 +486,8 @@ class SupportedLanguage(StrEnum):
     CSHARP = "c-sharp"
     PHP = "php"
     LUA = "lua"
+    GLSL = "glsl"
+    HLSL = "hlsl"
 
 
 class LanguageStatus(StrEnum):
@@ -774,6 +792,8 @@ class TreeSitterModule(StrEnum):
     CPP = "tree_sitter_cpp"
     LUA = "tree_sitter_lua"
     PHP = "tree_sitter_php"
+    GLSL = "tree_sitter_glsl"
+    HLSL = "tree_sitter_hlsl"
 
 
 # (H) Query dict keys
@@ -2958,3 +2978,35 @@ HEALTH_CHECK_EXTERNAL_TOOLS = [
 
 SHELL_CMD_WHERE = "where"
 SHELL_CMD_WHICH = "which"
+
+
+# (H) Node types for GLSL (C-based grammar)
+TS_GLSL_FUNCTION_DEFINITION = "function_definition"
+TS_GLSL_STRUCT_SPECIFIER = "struct_specifier"
+TS_GLSL_TRANSLATION_UNIT = "translation_unit"
+TS_GLSL_CALL_EXPRESSION = "call_expression"
+TS_GLSL_PREPROC_INCLUDE = "preproc_include"
+
+SPEC_GLSL_FUNCTION_TYPES = (TS_GLSL_FUNCTION_DEFINITION,)
+SPEC_GLSL_CLASS_TYPES = (TS_GLSL_STRUCT_SPECIFIER,)
+SPEC_GLSL_MODULE_TYPES = (TS_GLSL_TRANSLATION_UNIT,)
+SPEC_GLSL_CALL_TYPES = (TS_GLSL_CALL_EXPRESSION,)
+SPEC_GLSL_IMPORT_TYPES = (TS_GLSL_PREPROC_INCLUDE,)
+FQN_GLSL_SCOPE_TYPES = (TS_GLSL_TRANSLATION_UNIT,)
+FQN_GLSL_FUNCTION_TYPES = (TS_GLSL_FUNCTION_DEFINITION,)
+
+# (H) Node types for HLSL (C++-based grammar)
+TS_HLSL_FUNCTION_DEFINITION = "function_definition"
+TS_HLSL_CLASS_SPECIFIER = "class_specifier"
+TS_HLSL_STRUCT_SPECIFIER = "struct_specifier"
+TS_HLSL_TRANSLATION_UNIT = "translation_unit"
+TS_HLSL_CALL_EXPRESSION = "call_expression"
+TS_HLSL_PREPROC_INCLUDE = "preproc_include"
+
+SPEC_HLSL_FUNCTION_TYPES = (TS_HLSL_FUNCTION_DEFINITION,)
+SPEC_HLSL_CLASS_TYPES = (TS_HLSL_CLASS_SPECIFIER, TS_HLSL_STRUCT_SPECIFIER)
+SPEC_HLSL_MODULE_TYPES = (TS_HLSL_TRANSLATION_UNIT,)
+SPEC_HLSL_CALL_TYPES = (TS_HLSL_CALL_EXPRESSION,)
+SPEC_HLSL_IMPORT_TYPES = (TS_HLSL_PREPROC_INCLUDE,)
+FQN_HLSL_SCOPE_TYPES = (TS_HLSL_TRANSLATION_UNIT, TS_HLSL_CLASS_SPECIFIER, TS_HLSL_STRUCT_SPECIFIER)
+FQN_HLSL_FUNCTION_TYPES = (TS_HLSL_FUNCTION_DEFINITION,)

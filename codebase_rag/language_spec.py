@@ -228,6 +228,20 @@ PHP_FQN_SPEC = FQNSpec(
     file_to_module_parts=_php_file_to_module,
 )
 
+GLSL_FQN_SPEC = FQNSpec(
+    scope_node_types=frozenset(cs.FQN_GLSL_SCOPE_TYPES),
+    function_node_types=frozenset(cs.FQN_GLSL_FUNCTION_TYPES),
+    get_name=_generic_get_name,
+    file_to_module_parts=_generic_file_to_module,
+)
+
+HLSL_FQN_SPEC = FQNSpec(
+    scope_node_types=frozenset(cs.FQN_HLSL_SCOPE_TYPES),
+    function_node_types=frozenset(cs.FQN_HLSL_FUNCTION_TYPES),
+    get_name=_generic_get_name,
+    file_to_module_parts=_generic_file_to_module,
+)
+
 LANGUAGE_FQN_SPECS: dict[cs.SupportedLanguage, FQNSpec] = {
     cs.SupportedLanguage.PYTHON: PYTHON_FQN_SPEC,
     cs.SupportedLanguage.JS: JS_FQN_SPEC,
@@ -241,6 +255,8 @@ LANGUAGE_FQN_SPECS: dict[cs.SupportedLanguage, FQNSpec] = {
     cs.SupportedLanguage.SCALA: SCALA_FQN_SPEC,
     cs.SupportedLanguage.CSHARP: CSHARP_FQN_SPEC,
     cs.SupportedLanguage.PHP: PHP_FQN_SPEC,
+    cs.SupportedLanguage.GLSL: GLSL_FQN_SPEC,
+    cs.SupportedLanguage.HLSL: HLSL_FQN_SPEC,
 }
 
 
@@ -506,9 +522,36 @@ LANGUAGE_SPECS: dict[cs.SupportedLanguage, LanguageSpec] = {
         call_node_types=cs.SPEC_LUA_CALL_TYPES,
         import_node_types=cs.SPEC_LUA_IMPORT_TYPES,
     ),
+    cs.SupportedLanguage.GLSL: LanguageSpec(
+        language=cs.SupportedLanguage.GLSL,
+        file_extensions=cs.GLSL_EXTENSIONS,
+        function_node_types=cs.SPEC_GLSL_FUNCTION_TYPES,
+        class_node_types=cs.SPEC_GLSL_CLASS_TYPES,
+        module_node_types=cs.SPEC_GLSL_MODULE_TYPES,
+        call_node_types=cs.SPEC_GLSL_CALL_TYPES,
+        import_node_types=cs.SPEC_GLSL_IMPORT_TYPES,
+    ),
+    cs.SupportedLanguage.HLSL: LanguageSpec(
+        language=cs.SupportedLanguage.HLSL,
+        file_extensions=cs.HLSL_EXTENSIONS,
+        function_node_types=cs.SPEC_HLSL_FUNCTION_TYPES,
+        class_node_types=cs.SPEC_HLSL_CLASS_TYPES,
+        module_node_types=cs.SPEC_HLSL_MODULE_TYPES,
+        call_node_types=cs.SPEC_HLSL_CALL_TYPES,
+        import_node_types=cs.SPEC_HLSL_IMPORT_TYPES,
+    ),
 }
 
-_EXTENSION_TO_SPEC: dict[str, LanguageSpec] = {}
+_EXTENSION_TO_SPEC: dict[str, LanguageSpec] = {
+    "c-sharp": LanguageSpec(
+        language="c-sharp",
+        file_extensions=('.cs',),
+        function_node_types=('constructor_declaration', 'local_function_statement', 'method_declaration', 'destructor_declaration', 'anonymous_method_expression', 'lambda_expression', 'function_pointer_type'),
+        class_node_types=('pointer_type', 'type_pattern', 'anonymous_object_creation_expression', 'tuple_type', 'interface_declaration', 'array_type', 'implicit_stackalloc_expression', 'implicit_object_creation_expression', 'enum_declaration', 'object_creation_expression', 'struct_declaration', 'ref_type', 'class_declaration', 'typeof_expression', 'implicit_array_creation_expression', 'reftype_expression', 'nullable_type', 'implicit_type', 'scoped_type', 'predefined_type'),
+        module_node_types=('compilation_unit',),
+        call_node_types=('invocation_expression',),
+    ),
+}
 for _config in LANGUAGE_SPECS.values():
     for _ext in _config.file_extensions:
         _EXTENSION_TO_SPEC[_ext] = _config
