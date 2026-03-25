@@ -792,6 +792,7 @@ class TreeSitterModule(StrEnum):
     CPP = "tree_sitter_cpp"
     LUA = "tree_sitter_lua"
     PHP = "tree_sitter_php"
+    CSHARP = "tree_sitter_c_sharp"
     GLSL = "tree_sitter_glsl"
     HLSL = "tree_sitter_hlsl"
 

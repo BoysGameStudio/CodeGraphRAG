@@ -1,9 +1,0 @@
-[submodule "grammars/tree-sitter-c-sharp"]
-	path = grammars/tree-sitter-c-sharp
-	url = https://github.com/tree-sitter/tree-sitter-c-sharp
-[submodule "grammars/tree-sitter-glsl"]
-	path = grammars/tree-sitter-glsl
-	url = https://github.com/tree-sitter-grammars/tree-sitter-glsl
-[submodule "grammars/tree-sitter-hlsl"]
-	path = grammars/tree-sitter-hlsl
-	url = https://github.com/tree-sitter-grammars/tree-sitter-hlsl
