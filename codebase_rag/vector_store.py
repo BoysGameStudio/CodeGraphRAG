@@ -25,14 +25,22 @@ if has_qdrant_client():
     def get_qdrant_client() -> QdrantClient:
         global _CLIENT
         if _CLIENT is None:
-            _CLIENT = QdrantClient(path=settings.QDRANT_DB_PATH)
-            if not _CLIENT.collection_exists(settings.QDRANT_COLLECTION_NAME):
-                _CLIENT.create_collection(
-                    collection_name=settings.QDRANT_COLLECTION_NAME,
-                    vectors_config=VectorParams(
-                        size=settings.QDRANT_VECTOR_DIM, distance=Distance.COSINE
-                    ),
-                )
+            _CLIENT = QdrantClient(
+                url=settings.QDRANT_URL,
+                port=settings.QDRANT_PORT,
+                api_key=settings.QDRANT_API_KEY,
+                https=settings.QDRANT_HTTPS,
+            )
+            try:
+                if not _CLIENT.collection_exists(settings.QDRANT_COLLECTION_NAME):
+                    _CLIENT.create_collection(
+                        collection_name=settings.QDRANT_COLLECTION_NAME,
+                        vectors_config=VectorParams(
+                            size=settings.QDRANT_VECTOR_DIM, distance=Distance.COSINE
+                        ),
+                    )
+            except Exception as e:
+                logger.warning(f"Failed to check/create collection: {e}")
         return _CLIENT
 
     def _upsert_with_retry(points: list[PointStruct]) -> None:

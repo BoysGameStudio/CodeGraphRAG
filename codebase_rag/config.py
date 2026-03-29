@@ -247,13 +247,17 @@ class AppConfig(BaseSettings):
         }
     )
 
-    QDRANT_DB_PATH: str = "./.qdrant_code_embeddings"
+    QDRANT_URL: str = "http://localhost"
+    QDRANT_PORT: int = 6333
+    QDRANT_API_KEY: str | None = None
+    QDRANT_HTTPS: bool = False
     QDRANT_COLLECTION_NAME: str = "code_embeddings"
     QDRANT_VECTOR_DIM: int = 768
     QDRANT_TOP_K: int = 5
     QDRANT_UPSERT_RETRIES: int = Field(default=3, gt=0)
     QDRANT_RETRY_BASE_DELAY: float = Field(default=0.5, gt=0)
     QDRANT_BATCH_SIZE: int = Field(default=50, gt=0)
+    EMBEDDING_CACHE_PATH: str = "./.embedding_cache"
     EMBEDDING_MAX_LENGTH: int = 512
     EMBEDDING_PROGRESS_INTERVAL: int = 10
 
