@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import sys
 from collections import OrderedDict, defaultdict
 from collections.abc import Callable, ItemsView, KeysView
@@ -157,9 +158,9 @@ class FunctionRegistryTrie:
     def find_ending_with(self, suffix: str) -> list[QualifiedName]:
         if self._simple_name_lookup is not None and suffix in self._simple_name_lookup:
             # (H) O(1) lookup using the simple_name_lookup index
-            return list(self._simple_name_lookup[suffix])
+            return sorted(self._simple_name_lookup[suffix])
         # (H) Fallback to linear scan if no index available
-        return [qn for qn in self._entries.keys() if qn.endswith(f".{suffix}")]
+        return sorted(qn for qn in self._entries.keys() if qn.endswith(f".{suffix}"))
 
     def find_with_prefix(self, prefix: str) -> list[tuple[QualifiedName, NodeType]]:
         node = self._navigate_to_prefix(prefix)
@@ -322,6 +323,10 @@ class GraphUpdater:
         logger.info(ls.PASS_2_FILES)
         self._process_files(force=force)
 
+        corrected = self.factory.definition_processor.resolve_deferred_cpp_methods()
+        if corrected:
+            logger.info("Resolved {} deferred C++ out-of-class methods", corrected)
+
         logger.info(ls.FOUND_FUNCTIONS, count=len(self.function_registry))
         logger.info(ls.PASS_3_CALLS)
         self._process_function_calls()
@@ -367,6 +372,19 @@ class GraphUpdater:
                 self.simple_name_lookup[simple_name] = new_qn_set
                 logger.debug(ls.CLEANED_SIMPLE_NAME, name=simple_name)
 
+    def _should_keep_dir(self, dirname: str, dir_prefix: str) -> bool:
+        if dirname not in cs.IGNORE_PATTERNS and (
+            not self.exclude_paths or dirname not in self.exclude_paths
+        ):
+            return True
+        return bool(
+            self.unignore_paths
+            and any(
+                u.startswith(f"{dir_prefix}{dirname}/") or u == f"{dir_prefix}{dirname}"
+                for u in self.unignore_paths
+            )
+        )
+
     def _collect_eligible_files(self) -> list[Path]:
         if self._single_file is not None:
             if not should_skip_path(
@@ -379,18 +397,24 @@ class GraphUpdater:
             return []
 
         eligible: list[Path] = []
-        for filepath in self.repo_path.rglob("*"):
-            if (
-                filepath.is_file()
-                and filepath.name != cs.HASH_CACHE_FILENAME
-                and not should_skip_path(
+        hash_name = cs.HASH_CACHE_FILENAME
+        for dirpath, dirnames, filenames in os.walk(str(self.repo_path)):
+            rel_dir = Path(dirpath).relative_to(self.repo_path).as_posix()
+            dir_prefix = "" if rel_dir == "." else f"{rel_dir}/"
+            dirnames[:] = sorted(
+                d for d in dirnames if self._should_keep_dir(d, dir_prefix)
+            )
+            for fname in sorted(filenames):
+                if fname == hash_name:
+                    continue
+                filepath = Path(dirpath) / fname
+                if not should_skip_path(
                     filepath,
                     self.repo_path,
                     exclude_paths=self.exclude_paths,
                     unignore_paths=self.unignore_paths,
-                )
-            ):
-                eligible.append(filepath)
+                ):
+                    eligible.append(filepath)
         return eligible
 
     def _process_files(self, force: bool = False) -> None:

@@ -309,10 +309,21 @@ The system automatically detects and processes files for all supported languages
 
 ### Step 2: Query the Codebase
 
+**Interactive mode:**
+
 Start the interactive RAG CLI:
 
 ```bash
 cgr start --repo-path /path/to/your/repo
+```
+
+**Non-interactive mode (single query):**
+
+Run a single query and exit, with output sent to stdout (useful for scripting):
+
+```bash
+python -m codebase_rag.main start --repo-path /path/to/your/repo \
+  --ask-agent "What functions call UserService.create_user?"
 ```
 
 ### Step 2.5: Real-Time Graph Updates (Optional)
@@ -557,13 +568,16 @@ claude mcp add --transport stdio code-graph-rag \
 | `list_projects` | List all indexed projects in the knowledge graph database. Returns a list of project names that have been indexed. |
 | `delete_project` | Delete a specific project from the knowledge graph database. This removes all nodes associated with the project while preserving other projects. Use list_projects first to see available projects. |
 | `wipe_database` | WARNING: Completely wipe the entire database, removing ALL indexed projects. This cannot be undone. Use delete_project for removing individual projects. |
-| `index_repository` | Parse and ingest the repository into the Memgraph knowledge graph. This builds a comprehensive graph of functions, classes, dependencies, and relationships. Note: This preserves other projects - only the current project is re-indexed. |
-| `query_code_graph` | Query the codebase knowledge graph using natural language. Ask questions like 'What functions call UserService.create_user?' or 'Show me all classes that implement the Repository interface'. |
+| `index_repository` | WARNING: Clears all data for the current project including its embeddings. Parse and ingest the repository into the Memgraph knowledge graph. Use update_repository for incremental updates. Only use when explicitly requested. |
+| `update_repository` | Update the repository in the Memgraph knowledge graph without clearing existing data. Use this for incremental updates. |
+| `query_code_graph` | Query the codebase knowledge graph using natural language. Use semantic_search unless you know the exact names of classes/functions you are searching for. Ask questions like 'What functions call UserService.create_user?' or 'Show me all classes that implement the Repository interface'. |
 | `get_code_snippet` | Retrieve source code for a function, class, or method by its qualified name. Returns the source code, file path, line numbers, and docstring. |
 | `surgical_replace_code` | Surgically replace an exact code block in a file using diff-match-patch. Only modifies the exact target block, leaving the rest unchanged. |
 | `read_file` | Read the contents of a file from the project. Supports pagination for large files. |
 | `write_file` | Write content to a file, creating it if it doesn't exist. |
 | `list_directory` | List contents of a directory in the project. |
+| `semantic_search` | Performs a semantic search for functions based on a natural language query describing their purpose, returning a list of potential matches with similarity scores. Requires the 'semantic' extra to be installed. |
+| `ask_agent` | Ask the RAG agent a question about the codebase. Wraps the full RAG pipeline (graph query, LLM response) as an MCP tool. |
 <!-- /SECTION:mcp_tools -->
 
 ### Example Usage
@@ -705,7 +719,7 @@ my_build_output
 - **pydantic-settings**: Settings management using Pydantic
 - **pymgclient**: Memgraph database adapter for Python language
 - **python-dotenv**: Read key-value pairs from a .env file and set them as environment variables
-- **tiktoken**: tiktoken is a fast BPE tokeniser for use with OpenAI's models
+- **tiktoken**: Fast BPE tokeniser used for token counting and context window management
 - **toml**: Python Library for Tom's Obvious, Minimal Language
 - **tree-sitter-python**: Python grammar for tree-sitter
 - **tree-sitter**: Python bindings to the Tree-sitter parsing library
@@ -914,3 +928,7 @@ We also offer custom development, integration consulting, technical support cont
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=vitali87/code-graph-rag&type=Date)](https://www.star-history.com/#vitali87/code-graph-rag&Date)
+
+## Fork History
+
+[![Fork History Chart](https://fork-history.site/svg?repos=vitali87/code-graph-rag)](https://fork-history.site/#vitali87/code-graph-rag)

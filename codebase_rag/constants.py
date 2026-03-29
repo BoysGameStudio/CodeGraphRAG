@@ -20,9 +20,7 @@ class Provider(StrEnum):
     OPENAI = "openai"
     GOOGLE = "google"
     AZURE = "azure"
-    COHERE = "cohere"
-    LOCAL = "local"
-    VLLM = "vllm"
+    LITELLM_PROXY = "litellm_proxy"
 
 
 class Color(StrEnum):
@@ -234,6 +232,10 @@ ONEOF_FILE = "file"
 ONEOF_EXTERNAL_PACKAGE = "external_package"
 ONEOF_MODULE_IMPLEMENTATION = "module_implementation"
 ONEOF_MODULE_INTERFACE = "module_interface"
+ONEOF_INTERFACE = "interface_node"
+ONEOF_ENUM = "enum_node"
+ONEOF_TYPE = "type_node"
+ONEOF_UNION = "union_node"
 
 # (H) CLI error and info messages
 CLI_ERR_OUTPUT_REQUIRES_UPDATE = (
@@ -928,6 +930,7 @@ REALTIME_LOGGER_FORMAT = (
 
 WATCHER_SLEEP_INTERVAL = 1
 LOG_LEVEL_INFO = "INFO"
+LOG_LEVEL_ERROR = "ERROR"
 
 # (H) Debounce settings for realtime watcher
 DEFAULT_DEBOUNCE_SECONDS = 5
@@ -1950,6 +1953,20 @@ CPP_STDLIB_ENTITIES = frozenset(
     }
 )
 
+# (H) Java stdlib package prefixes for static stdlib detection
+JAVA_STDLIB_PREFIXES = (
+    "java.",
+    "javax.",
+    "jdk.",
+    "com.sun.",
+    "sun.",
+    "org.w3c.",
+    "org.xml.",
+    "org.ietf.",
+    "org.omg.",
+    "netscape.",
+)
+
 # (H) Java common class names for heuristic detection
 JAVA_STDLIB_CLASSES = frozenset(
     {
@@ -2479,12 +2496,15 @@ class MCPToolName(StrEnum):
     DELETE_PROJECT = "delete_project"
     WIPE_DATABASE = "wipe_database"
     INDEX_REPOSITORY = "index_repository"
+    UPDATE_REPOSITORY = "update_repository"
     QUERY_CODE_GRAPH = "query_code_graph"
     GET_CODE_SNIPPET = "get_code_snippet"
     SURGICAL_REPLACE_CODE = "surgical_replace_code"
     READ_FILE = "read_file"
     WRITE_FILE = "write_file"
     LIST_DIRECTORY = "list_directory"
+    SEMANTIC_SEARCH = "semantic_search"
+    ASK_AGENT = "ask_agent"
 
 
 # (H) MCP transport selection
@@ -2530,6 +2550,8 @@ class MCPParamName(StrEnum):
     LIMIT = "limit"
     CONTENT = "content"
     DIRECTORY_PATH = "directory_path"
+    TOP_K = "top_k"
+    QUESTION = "question"
 
 
 # (H) MCP server constants
@@ -2548,6 +2570,12 @@ MCP_INDEX_ERROR = "Error indexing repository: {error}"
 MCP_WRITE_SUCCESS = "Successfully wrote file: {path}"
 MCP_UNKNOWN_TOOL_ERROR = "Unknown tool: {name}"
 MCP_TOOL_EXEC_ERROR = "Error executing tool '{name}': {error}"
+MCP_UPDATE_SUCCESS = "Successfully updated repository at {path} (no database wipe)."
+MCP_UPDATE_ERROR = "Error updating repository: {error}"
+MCP_SEMANTIC_NOT_AVAILABLE_RESPONSE = (
+    "Semantic search is not available. Install with: uv sync --extra semantic"
+)
+MCP_ASK_AGENT_ERROR = "Error running ask_agent: {error}"
 MCP_PROJECT_DELETED = "Successfully deleted project '{project_name}'."
 MCP_WIPE_CANCELLED = "Database wipe cancelled. Set confirm=true to proceed."
 MCP_WIPE_SUCCESS = "Database completely wiped. All projects have been removed."

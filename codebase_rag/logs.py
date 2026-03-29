@@ -376,6 +376,7 @@ FILE_OUTSIDE_ROOT = "Security risk: Attempted to {action} file outside of projec
 CALL_PROCESSING_FILE = "Processing calls in cached AST for: {path}"
 CALL_PROCESSING_FAILED = "Failed to process calls in {path}: {error}"
 CALL_FOUND_NODES = "Found {count} call nodes in {language} for {caller}"
+CALL_SKIP_CLASS = "Skipping CALLS edge from {caller} to {call_name} (callee is Class node: {callee_qn})"
 CALL_FOUND = (
     "Found call from {caller} to {call_name} (resolved as {callee_type}:{callee_qn})"
 )
@@ -645,6 +646,14 @@ MCP_WRITE_FILE = "[MCP] write_file: {path}"
 MCP_ERROR_WRITE = "[MCP] Error writing file: {error}"
 MCP_LIST_DIR = "[MCP] list_directory: {path}"
 MCP_ERROR_LIST_DIR = "[MCP] Error listing directory: {error}"
+MCP_SEMANTIC_NOT_AVAILABLE = (
+    "[MCP] Semantic search not available. Install with: uv sync --extra semantic"
+)
+MCP_UPDATING_REPO = "[MCP] Updating repository at: {path}"
+MCP_ERROR_UPDATING = "[MCP] Error updating repository: {error}"
+MCP_SEMANTIC_SEARCH = "[MCP] semantic_search: {query}"
+MCP_ASK_AGENT = "[MCP] ask_agent: {question}"
+MCP_ASK_AGENT_ERROR = "[MCP] Error running ask_agent: {error}"
 
 # (H) MCP server logs
 MCP_SERVER_INFERRED_ROOT = "[GraphCode MCP] Using inferred project root: {path}"
